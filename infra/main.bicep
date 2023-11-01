@@ -632,3 +632,4 @@ output AZURE_STORAGE_RESOURCE_GROUP string = storageResourceGroup.name
 output AZURE_TENANT_ID string = tenant().tenantId
 output SERVICE_WEB_IDENTITY_NAME string = web.outputs.SERVICE_WEB_IDENTITY_NAME
 output SERVICE_WEB_NAME string = web.outputs.SERVICE_WEB_NAME
+output SERVICE_WEB_URI string = web.outputs.SERVICE_WEB_URI
