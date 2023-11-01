@@ -74,6 +74,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\SharedWebComponents\SharedWebComponents.csproj" />
       <ProjectReference Include="..\shared\Shared\Shared.csproj" />
     </ItemGroup>
 
