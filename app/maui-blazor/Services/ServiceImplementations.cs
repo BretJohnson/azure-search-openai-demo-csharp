@@ -5,7 +5,7 @@ namespace MauiBlazor.Services;
 // NOTE: These service implementations are incomplete. Only a few parts are implemented
 // for basic app functionality (for now).
 
-public class SessionStorageService : ISessionStorageService
+public class MauiSessionStorageService : ISessionStorageServiceWrapper
 {
     public double Length => 0;
 
@@ -33,7 +33,7 @@ public class SessionStorageService : ISessionStorageService
 }
 
 
-public class SpeechSynthesisService : ISpeechSynthesisService
+public class MauiSpeechSynthesisService : ISpeechSynthesisServiceWrapper
 {
     public bool Paused => false;
 
@@ -45,9 +45,9 @@ public class SpeechSynthesisService : ISpeechSynthesisService
     {
     }
 
-    public ValueTask<SpeechSynthesisVoice[]> GetVoicesAsync()
+    public ValueTask<SpeechSynthesisVoiceWrapper[]> GetVoicesAsync()
     {
-        return ValueTask.FromResult<SpeechSynthesisVoice[]>(null);
+        return ValueTask.FromResult<SpeechSynthesisVoiceWrapper[]>(null);
     }
 
     public void Pause()
@@ -58,12 +58,12 @@ public class SpeechSynthesisService : ISpeechSynthesisService
     {
     }
 
-    public void Speak(SpeechSynthesisUtterance utterance)
+    public void Speak(SpeechSynthesisUtteranceWrapper utterance)
     {
     }
 }
 
-public class LocalStorageService : ILocalStorageService
+public class MauiLocalStorageService : ILocalStorageServiceWrapper
 {
     public double Length => 0;
 
@@ -91,7 +91,7 @@ public class LocalStorageService : ILocalStorageService
     }
 }
 
-public class SpeechRecognitionService : ISpeechRecognitionService
+public class MauiSpeechRecognitionService : ISpeechRecognitionServiceWrapper
 {
     public void CancelSpeechRecognition(bool isAborted)
     {
@@ -107,8 +107,36 @@ public class SpeechRecognitionService : ISpeechRecognitionService
         return Task.CompletedTask;
     }
 
-    public IDisposable RecognizeSpeech(string language, Action<string> onRecognized, Action<SpeechRecognitionErrorEvent>? onError = null, Action? onStarted = null, Action? onEnded = null)
+    public IDisposable RecognizeSpeech(string language, Action<string> onRecognized, Action<SpeechRecognitionErrorEventWrapper>? onError = null, Action? onStarted = null, Action? onEnded = null)
     {
         return default;
+    }
+}
+
+public class MauiSpeechSynthesisServiceExtensions : ISpeechSynthesisServiceExtensions
+{
+    public void OnUtteranceEnded(ISpeechSynthesisServiceWrapper service, string text, double elapsedTimeSpokenInMilliseconds)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void OnVoicesChanged(ISpeechSynthesisServiceWrapper service, Func<Task> onVoicesChanged)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void Speak(ISpeechSynthesisServiceWrapper service, SpeechSynthesisUtteranceWrapper utterance, Action<double> onUtteranceEnded)
+    {
+        throw new NotImplementedException();
+    }
+
+    public void UnsubscribeFromVoicesChanged(ISpeechSynthesisServiceWrapper service)
+    {
+        throw new NotImplementedException();
+    }
+
+    public Task VoicesChangedAsync(ISpeechSynthesisServiceWrapper service, string guid)
+    {
+        throw new NotImplementedException();
     }
 }

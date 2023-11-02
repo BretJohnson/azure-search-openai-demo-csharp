@@ -25,10 +25,13 @@ public static class MauiProgram
             client.BaseAddress = new Uri("TODO");
         });
         builder.Services.AddScoped<OpenAIPromptQueue>();
-        builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
-        builder.Services.AddSingleton<ISessionStorageService, SessionStorageService>();
-        builder.Services.AddSingleton<ISpeechRecognitionService, SpeechRecognitionService>();
-        builder.Services.AddSingleton<ISpeechSynthesisService, SpeechSynthesisService>();
+
+        builder.Services.AddSingleton<ILocalStorageServiceWrapper, MauiLocalStorageService>();
+        builder.Services.AddSingleton<ISessionStorageServiceWrapper, MauiSessionStorageService>();
+        builder.Services.AddSingleton<ISpeechRecognitionServiceWrapper, MauiSpeechRecognitionService>();
+        builder.Services.AddSingleton<ISpeechSynthesisServiceWrapper, MauiSpeechSynthesisService>();
+        builder.Services.AddSingleton<ISpeechSynthesisServiceExtensions, MauiSpeechSynthesisServiceExtensions>();
+
         builder.Services.AddMudServices();
 
         return builder.Build();
