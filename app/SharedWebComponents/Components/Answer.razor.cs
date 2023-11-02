@@ -1,5 +1,7 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
+using System.Reflection.Metadata;
+
 namespace SharedWebComponents.Components;
 
 public sealed partial class Answer
@@ -7,7 +9,7 @@ public sealed partial class Answer
     [Parameter, EditorRequired] public required ApproachResponse Retort { get; set; }
     [Parameter, EditorRequired] public required EventCallback<string> FollowupQuestionClicked { get; set; }
 
-    [Inject] public required IDialogService Dialog { get; set; }
+    [Inject] public required IPdfViewer PdfViewer { get; set; }
 
     private HtmlParsedAnswer? _parsedAnswer;
 
@@ -26,21 +28,7 @@ public sealed partial class Answer
             await FollowupQuestionClicked.InvokeAsync(followupQuestion);
         }
     }
-
-    private void OnShowCitation(CitationDetails citation) => Dialog.Show<PdfViewerDialog>(
-            $"📄 {citation.Name}",
-            new DialogParameters
-            {
-                [nameof(PdfViewerDialog.FileName)] = citation.Name,
-                [nameof(PdfViewerDialog.BaseUrl)] = citation.BaseUrl,
-            },
-            new DialogOptions
-            {
-                MaxWidth = MaxWidth.Large,
-                FullWidth = true,
-                CloseButton = true,
-                CloseOnEscapeKey = true
-            });
+    private void OnShowCitation(CitationDetails citation) => PdfViewer.ShowDocument(citation.Name, citation.BaseUrl);
 
     private MarkupString RemoveLeadingAndTrailingLineBreaks(string input) => (MarkupString)HtmlLineBreakRegex().Replace(input, "");
 

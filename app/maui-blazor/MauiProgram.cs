@@ -26,11 +26,11 @@ public static class MauiProgram
         });
         builder.Services.AddScoped<OpenAIPromptQueue>();
 
-        builder.Services.AddSingleton<ILocalStorageServiceWrapper, MauiLocalStorageService>();
-        builder.Services.AddSingleton<ISessionStorageServiceWrapper, MauiSessionStorageService>();
-        builder.Services.AddSingleton<ISpeechRecognitionServiceWrapper, MauiSpeechRecognitionService>();
-        builder.Services.AddSingleton<ISpeechSynthesisServiceWrapper, MauiSpeechSynthesisService>();
-        builder.Services.AddSingleton<ISpeechSynthesisServiceExtensions, MauiSpeechSynthesisServiceExtensions>();
+        builder.Services.AddSingleton<ILocalStorageService, MauiLocalStorageService>();
+        builder.Services.AddSingleton<ISessionStorageService, MauiSessionStorageService>();
+        builder.Services.AddSingleton<ISpeechRecognitionService, MauiSpeechRecognitionService>();
+        builder.Services.AddSingleton<ISpeechSynthesisService, MauiSpeechSynthesisService>();
+        builder.Services.AddTransient<IPdfViewer, MauiPdfViewer>();
 
         builder.Services.AddMudServices();
 

@@ -25,7 +25,7 @@ public sealed partial class MainLayout
         Thread.CurrentThread.CurrentUICulture is { TextInfo.IsRightToLeft: true };
 
     [Inject] public required NavigationManager Nav { get; set; }
-    [Inject] public required ILocalStorageServiceWrapper LocalStorage { get; set; }
+    [Inject] public required ILocalStorageService LocalStorage { get; set; }
     [Inject] public required IDialogService Dialog { get; set; }
 
     private bool SettingsDisabled => new Uri(Nav.Uri).Segments.LastOrDefault() switch

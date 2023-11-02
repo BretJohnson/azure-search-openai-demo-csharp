@@ -38,7 +38,7 @@ public sealed partial class VoiceTextInput : IDisposable
     [Parameter] public string Placeholder { get; set; } = "";
     [Parameter] public string HelperText { get; set; } = "Use Shift + Enter for new lines.";
     [Parameter] public string Icon { get; set; } = Icons.Material.Filled.VoiceChat;
-    [Inject] public required ISpeechRecognitionServiceWrapper SpeechRecognition { get; set; }
+    [Inject] public required ISpeechRecognitionService SpeechRecognition { get; set; }
     [Inject] public required ILogger<VoiceTextInput> Logger { get; set; }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -90,7 +90,7 @@ public sealed partial class VoiceTextInput : IDisposable
         StateHasChanged();
     }
 
-    private void OnError(SpeechRecognitionErrorEventWrapper errorEvent)
+    private void OnError(SpeechRecognitionErrorEvent errorEvent)
     {
         Logger.LogWarning(
             "{Error}: {Message}", errorEvent.Error, errorEvent.Message);

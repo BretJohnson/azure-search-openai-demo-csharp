@@ -5,7 +5,7 @@ namespace MauiBlazor.Services;
 // NOTE: These service implementations are incomplete. Only a few parts are implemented
 // for basic app functionality (for now).
 
-public class MauiSessionStorageService : ISessionStorageServiceWrapper
+public class MauiSessionStorageService : ISessionStorageService
 {
     public double Length => 0;
 
@@ -32,38 +32,41 @@ public class MauiSessionStorageService : ISessionStorageServiceWrapper
     }
 }
 
-
-public class MauiSpeechSynthesisService : ISpeechSynthesisServiceWrapper
+public class MauiSpeechSynthesisService : ISpeechSynthesisService
 {
-    public bool Paused => false;
+    public bool Paused => throw new NotImplementedException();
 
-    public bool Pending => false;
+    public bool Pending => throw new NotImplementedException();
 
-    public bool Speaking => false;
+    public bool Speaking => throw new NotImplementedException();
 
     public void Cancel()
     {
+        throw new NotImplementedException();
     }
 
-    public ValueTask<SpeechSynthesisVoiceWrapper[]> GetVoicesAsync()
+    public ValueTask<SpeechSynthesisVoice[]> GetVoicesAsync()
     {
-        return ValueTask.FromResult<SpeechSynthesisVoiceWrapper[]>(null);
+        throw new NotImplementedException();
     }
 
     public void Pause()
     {
+        throw new NotImplementedException();
     }
 
     public void Resume()
     {
+        throw new NotImplementedException();
     }
 
-    public void Speak(SpeechSynthesisUtteranceWrapper utterance)
+    public void Speak(SpeechSynthesisUtterance utterance)
     {
+        throw new NotImplementedException();
     }
 }
 
-public class MauiLocalStorageService : ILocalStorageServiceWrapper
+public class MauiLocalStorageService : ILocalStorageService
 {
     public double Length => 0;
 
@@ -73,7 +76,7 @@ public class MauiLocalStorageService : ILocalStorageServiceWrapper
 
     public TValue? GetItem<TValue>(string key, JsonSerializerOptions? options = null)
     {
-        return Preferences.Default.Get<TValue>(key, default(TValue));
+        return Preferences.Default.Get<TValue>(key, default);
     }
 
     public string? Key(double index)
@@ -91,7 +94,7 @@ public class MauiLocalStorageService : ILocalStorageServiceWrapper
     }
 }
 
-public class MauiSpeechRecognitionService : ISpeechRecognitionServiceWrapper
+public class MauiSpeechRecognitionService : ISpeechRecognitionService
 {
     public void CancelSpeechRecognition(bool isAborted)
     {
@@ -107,36 +110,8 @@ public class MauiSpeechRecognitionService : ISpeechRecognitionServiceWrapper
         return Task.CompletedTask;
     }
 
-    public IDisposable RecognizeSpeech(string language, Action<string> onRecognized, Action<SpeechRecognitionErrorEventWrapper>? onError = null, Action? onStarted = null, Action? onEnded = null)
+    public IDisposable RecognizeSpeech(string language, Action<string> onRecognized, Action<SpeechRecognitionErrorEvent>? onError = null, Action? onStarted = null, Action? onEnded = null)
     {
         return default;
-    }
-}
-
-public class MauiSpeechSynthesisServiceExtensions : ISpeechSynthesisServiceExtensions
-{
-    public void OnUtteranceEnded(ISpeechSynthesisServiceWrapper service, string text, double elapsedTimeSpokenInMilliseconds)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void OnVoicesChanged(ISpeechSynthesisServiceWrapper service, Func<Task> onVoicesChanged)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void Speak(ISpeechSynthesisServiceWrapper service, SpeechSynthesisUtteranceWrapper utterance, Action<double> onUtteranceEnded)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void UnsubscribeFromVoicesChanged(ISpeechSynthesisServiceWrapper service)
-    {
-        throw new NotImplementedException();
-    }
-
-    public Task VoicesChangedAsync(ISpeechSynthesisServiceWrapper service, string guid)
-    {
-        throw new NotImplementedException();
     }
 }

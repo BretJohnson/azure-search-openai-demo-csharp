@@ -21,10 +21,9 @@ public sealed partial class VoiceChat : IDisposable
 
     [Inject] public required OpenAIPromptQueue OpenAIPrompts { get; set; }
     [Inject] public required IDialogService Dialog { get; set; }
-    [Inject] public required ISpeechRecognitionServiceWrapper SpeechRecognition { get; set; }
-    [Inject] public required ISpeechSynthesisServiceWrapper SpeechSynthesis { get; set; }
-    [Inject] public required ISpeechSynthesisServiceExtensions SpeechSynthesisExtensions { get; set; }
-    [Inject] public required ILocalStorageServiceWrapper LocalStorage { get; set; }
+    [Inject] public required ISpeechRecognitionService SpeechRecognition { get; set; }
+    [Inject] public required ISpeechSynthesisService SpeechSynthesis { get; set; }
+    [Inject] public required ILocalStorageService LocalStorage { get; set; }
     [Inject] public required IJSInProcessRuntime JavaScript { get; set; }
     [Inject] public required ILogger<VoiceChat> Logger { get; set; }
 
@@ -66,19 +65,19 @@ public sealed partial class VoiceChat : IDisposable
                     if (isEnabled)
                     {
                         _isReadingResponse = true;
-                        var utterance = new SpeechSynthesisUtteranceWrapper
+                        var utterance = new SpeechSynthesisUtterance
                         {
                             Rate = rate,
                             Text = responseText
                         };
                         if (voice is not null)
                         {
-                            utterance.Voice = new SpeechSynthesisVoiceWrapper
+                            utterance.Voice = new SpeechSynthesisVoice
                             {
                                 Name = voice
                             };
                         }
-                        SpeechSynthesisExtensions.Speak(SpeechSynthesis, utterance, duration =>
+                        SpeechSynthesis.Speak(utterance, duration =>
                         {
                             _isReadingResponse = false;
                             StateHasChanged();
@@ -155,7 +154,7 @@ public sealed partial class VoiceChat : IDisposable
         StateHasChanged();
     }
 
-    private void OnError(SpeechRecognitionErrorEventWrapper errorEvent)
+    private void OnError(SpeechRecognitionErrorEvent errorEvent)
     {
         Logger.LogWarning(
             "{Error}: {Message}", errorEvent.Error, errorEvent.Message);

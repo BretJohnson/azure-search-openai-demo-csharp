@@ -1,6 +1,6 @@
 ﻿// Copyright (c) Microsoft. All rights reserved.
 
-namespace SharedWebComponents.Components;
+namespace ClientApp.Components;
 
 public sealed partial class PdfViewerDialog
 {
@@ -15,14 +15,13 @@ public sealed partial class PdfViewerDialog
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
-        // TODO: Eilon
-        //await JavaScriptModule.RegisterIFrameLoadedAsync(
-        //    "#pdf-viewer",
-        //    () =>
-        //    {
-        //        _isLoading = false;
-        //        StateHasChanged();
-        //    });
+        await JavaScriptModule.RegisterIFrameLoadedAsync(
+            "#pdf-viewer",
+            () =>
+            {
+                _isLoading = false;
+                StateHasChanged();
+            });
     }
 
     private void OnCloseClick() => Dialog.Close(DialogResult.Ok(true));

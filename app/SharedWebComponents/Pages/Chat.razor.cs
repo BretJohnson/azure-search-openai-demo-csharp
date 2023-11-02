@@ -11,7 +11,7 @@ public sealed partial class Chat
 
     private readonly Dictionary<UserQuestion, ApproachResponse?> _questionAndAnswerMap = [];
 
-    [Inject] public required ISessionStorageServiceWrapper SessionStorage { get; set; }
+    [Inject] public required ISessionStorageService SessionStorage { get; set; }
 
     [Inject] public required ApiClient ApiClient { get; set; }
 

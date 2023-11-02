@@ -20,9 +20,6 @@ public sealed partial class Docs : IDisposable
     public required ApiClient Client { get; set; }
 
     [Inject]
-    public required IDialogService Dialog { get; set; }
-
-    [Inject]
     public required ISnackbar Snackbar { get; set; }
 
     [Inject]
@@ -30,6 +27,9 @@ public sealed partial class Docs : IDisposable
 
     [Inject]
     public required IJSRuntime JSRuntime { get; set; }
+
+    [Inject]
+    public required IPdfViewer PdfViewer { get; set; }
 
     private bool FilesSelected => _fileUpload is { Files.Count: > 0 };
 
@@ -101,21 +101,7 @@ public sealed partial class Docs : IDisposable
         }
     }
 
-    private void OnShowDocument(DocumentResponse document) => Dialog.Show<PdfViewerDialog>(
-            $"📄 {document.Name}",
-            new DialogParameters
-            {
-                [nameof(PdfViewerDialog.FileName)] = document.Name,
-                [nameof(PdfViewerDialog.BaseUrl)] =
-                    document.Url.ToString().Replace($"/{document.Name}", ""),
-            },
-            new DialogOptions
-            {
-                MaxWidth = MaxWidth.Large,
-                FullWidth = true,
-                CloseButton = true,
-                CloseOnEscapeKey = true
-            });
+    private void OnShowDocument(DocumentResponse document) => PdfViewer.ShowDocument(document.Name, document.Url.ToString().Replace($"/{document.Name}", ""));
 
     public void Dispose() => _cancellationTokenSource.Cancel();
 }

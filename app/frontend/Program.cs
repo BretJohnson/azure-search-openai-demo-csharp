@@ -19,12 +19,7 @@ builder.Services.AddSessionStorageServices();
 builder.Services.AddSpeechSynthesisServices();
 builder.Services.AddSpeechRecognitionServices();
 builder.Services.AddMudServices();
-
-builder.Services.AddSingleton<ILocalStorageServiceWrapper, LocalStorageServiceImplementation>();
-builder.Services.AddSingleton<ISessionStorageServiceWrapper, SessionStorageServiceImplementation>();
-builder.Services.AddSingleton<ISpeechRecognitionServiceWrapper, SpeechRecognitionServiceImplementation>();
-builder.Services.AddSingleton<ISpeechSynthesisServiceWrapper, SpeechSynthesisServiceImplementation>();
-builder.Services.AddSingleton<ISpeechSynthesisServiceExtensions, SpeechSynthesisServiceExtensionsImplementation>();
+builder.Services.AddTransient<IPdfViewer, WebPdfViewer>();
 
 await JSHost.ImportAsync(
     moduleName: nameof(JavaScriptModule),

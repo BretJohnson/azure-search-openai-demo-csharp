@@ -4,16 +4,15 @@ namespace SharedWebComponents.Components;
 
 public sealed partial class VoiceDialog : IDisposable
 {
-    private SpeechSynthesisVoiceWrapper[] _voices = [];
+    private SpeechSynthesisVoice[] _voices = [];
     private readonly IList<double> _voiceSpeeds =
         Enumerable.Range(0, 12).Select(i => (i + 1) * .25).ToList();
     private VoicePreferences? _voicePreferences;
     private RequestVoiceState _state;
 
-    [Inject] public required ISpeechSynthesisServiceWrapper SpeechSynthesis { get; set; }
-    [Inject] public required ISpeechSynthesisServiceExtensions SpeechSynthesisExtensions { get; set; }
+    [Inject] public required ISpeechSynthesisService SpeechSynthesis { get; set; }
 
-    [Inject] public required ILocalStorageServiceWrapper LocalStorage { get; set; }
+    [Inject] public required ILocalStorageService LocalStorage { get; set; }
 
     [CascadingParameter] public required MudDialogInstance Dialog { get; set; }
 
@@ -22,7 +21,7 @@ public sealed partial class VoiceDialog : IDisposable
         _state = RequestVoiceState.RequestingVoices;
 
         await GetVoicesAsync();
-        SpeechSynthesisExtensions.OnVoicesChanged(SpeechSynthesis, () => GetVoicesAsync(true));
+        SpeechSynthesis.OnVoicesChanged(() => GetVoicesAsync(true));
 
         _voicePreferences = new VoicePreferences(LocalStorage);
 
@@ -56,7 +55,7 @@ public sealed partial class VoiceDialog : IDisposable
 
     private void OnCancel() => Dialog.Close(DialogResult.Ok(_voicePreferences));
 
-    public void Dispose() => SpeechSynthesisExtensions.UnsubscribeFromVoicesChanged(SpeechSynthesis);
+    public void Dispose() => SpeechSynthesis.UnsubscribeFromVoicesChanged();
 }
 
 internal enum RequestVoiceState
