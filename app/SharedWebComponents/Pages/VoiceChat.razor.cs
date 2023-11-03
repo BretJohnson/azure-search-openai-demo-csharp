@@ -24,7 +24,7 @@ public sealed partial class VoiceChat : IDisposable
     [Inject] public required ISpeechRecognitionService SpeechRecognition { get; set; }
     [Inject] public required ISpeechSynthesisService SpeechSynthesis { get; set; }
     [Inject] public required ILocalStorageService LocalStorage { get; set; }
-    [Inject] public required IJSInProcessRuntime JavaScript { get; set; }
+    [Inject] public required IJSRuntime JavaScript { get; set; }
     [Inject] public required ILogger<VoiceChat> Logger { get; set; }
 
     [CascadingParameter(Name = nameof(IsReversed))]
@@ -36,6 +36,8 @@ public sealed partial class VoiceChat : IDisposable
         {
             await SpeechRecognition.InitializeModuleAsync();
         }
+
+        await JavaScript.InvokeVoidAsync("highlight");
     }
 
     private void OnSendPrompt()
@@ -103,8 +105,6 @@ public sealed partial class VoiceChat : IDisposable
             OnSendPrompt();
         }
     }
-
-    protected override void OnAfterRender(bool firstRender) => JavaScript.InvokeVoid("highlight");
 
     private void StopTalking()
     {

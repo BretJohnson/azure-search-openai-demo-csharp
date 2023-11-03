@@ -22,3 +22,5 @@ global using Microsoft.JSInterop;
 global using MudBlazor;
 global using Shared.Json;
 global using Shared.Models;
+
+[assembly: System.Runtime.CompilerServices.InternalsVisibleTo("ClientApp.Tests")]
