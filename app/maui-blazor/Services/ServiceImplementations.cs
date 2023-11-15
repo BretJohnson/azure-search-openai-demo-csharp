@@ -70,28 +70,19 @@ public class MauiLocalStorageService : ILocalStorageService
 {
     public double Length => 0;
 
-    public void Clear()
-    {
-    }
+    public void Clear() =>
+        Preferences.Default.Clear();
 
-    public TValue? GetItem<TValue>(string key, JsonSerializerOptions? options = null)
-    {
-        return Preferences.Default.Get<TValue>(key, default);
-    }
+    public TValue? GetItem<TValue>(string key, JsonSerializerOptions? options = null) =>
+        Preferences.Default.Get<TValue>(key, default);
 
-    public string? Key(double index)
-    {
-        return default;
-    }
+    public string? Key(double index) => default;
 
-    public void RemoveItem(string key)
-    {
-    }
+    public void RemoveItem(string key) =>
+        Preferences.Default.Remove(key);
 
-    public void SetItem<TValue>(string key, TValue value, JsonSerializerOptions? options = null)
-    {
+    public void SetItem<TValue>(string key, TValue value, JsonSerializerOptions? options = null) =>
         Preferences.Default.Set<TValue>(key, value);
-    }
 }
 
 public class MauiSpeechRecognitionService : ISpeechRecognitionService
