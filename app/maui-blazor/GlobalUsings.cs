@@ -18,6 +18,5 @@ global using Microsoft.AspNetCore.Components.Web;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.JSInterop;
-global using MudBlazor;
 global using MudBlazor.Services;
 global using SharedWebComponents.Services;
