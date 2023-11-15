@@ -103,7 +103,7 @@ public sealed partial class VoiceTextInput : IDisposable
         Value = Value switch
         {
             null => transcript,
-            _ => $"{Value.Trim()} {transcript}".Trim()
+            _ => $"{Value.Trim()} {transcript.Trim()}"
         };
 
         StateHasChanged();
