@@ -39,6 +39,7 @@ public static class MauiProgram
 
 		builder.Services.AddMudServices();
 
+		builder.Services.AddSingleton<IPreferences>(Preferences.Default);
 		builder.Services.AddSingleton<ISpeechToText>(SpeechToText.Default);
 
 		return builder.Build();

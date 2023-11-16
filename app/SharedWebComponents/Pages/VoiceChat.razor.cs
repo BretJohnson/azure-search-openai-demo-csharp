@@ -79,11 +79,24 @@ public sealed partial class VoiceChat : IDisposable
                                 Name = voice
                             };
                         }
-                        SpeechSynthesis.Speak(utterance, duration =>
+                        try
                         {
+                            SpeechSynthesis.Speak(utterance, duration =>
+                            {
+                                _isReadingResponse = false;
+                                StateHasChanged();
+                            });
+                        }
+                        catch
+                        {
+                            // TODO: try and not use the method above as it is not really useful
+                            //       since the implementation checks for a specific type
+
+                            SpeechSynthesis.Speak(utterance);
+
                             _isReadingResponse = false;
                             StateHasChanged();
-                        });
+                        }
                     }
                 }
 

@@ -38,55 +38,125 @@ public class MauiSessionStorageService : ISessionStorageService
 
 public class MauiSpeechSynthesisService : ISpeechSynthesisService
 {
+    private CancellationTokenSource? _cts;
+
     public bool Paused => throw new NotImplementedException();
 
     public bool Pending => throw new NotImplementedException();
 
-    public bool Speaking => throw new NotImplementedException();
+    public bool Speaking => _cts != null;
 
     public void Cancel()
     {
-        throw new NotImplementedException();
+        _cts?.Cancel();
+        _cts = null;
     }
 
     public ValueTask<SpeechSynthesisVoice[]> GetVoicesAsync()
     {
-        throw new NotImplementedException();
+        var voice = new SpeechSynthesisVoice
+        {
+            Name = "Default Voice"
+        };
+
+        return ValueTask.FromResult<SpeechSynthesisVoice[]>([voice]);
     }
 
     public void Pause()
     {
-        throw new NotImplementedException();
+        Cancel();
+
+        // TODO: support pause & resume
     }
 
     public void Resume()
     {
-        throw new NotImplementedException();
+        // TODO: support pause & resume
     }
 
-    public void Speak(SpeechSynthesisUtterance utterance)
+    public async void Speak(SpeechSynthesisUtterance utterance)
     {
-        throw new NotImplementedException();
+        _cts = new();
+
+        var current = CultureInfo.CurrentUICulture.Name;
+
+        var locales = await TextToSpeech.Default.GetLocalesAsync();
+        var localeArray = locales.ToArray();
+        var locale = localeArray.FirstOrDefault(l => current == $"{l.Language}-{l.Country}");
+        if (locale is null)
+        {
+            // an exact match was not found, try just the lang
+            var split = current.Split('-');
+            if (split.Length == 1 || split.Length == 2)
+            {
+                // try the first part (or the whole thing if it is just lang)
+                locale = localeArray.FirstOrDefault(l => split[0] == $"{l.Language}");
+            }
+            else
+            {
+                // just go with the first one
+                locale = localeArray.FirstOrDefault();
+            }
+        }
+
+        var options = new SpeechOptions
+        {
+            Locale = locale
+        };
+        await TextToSpeech.Default.SpeakAsync(utterance.Text, options, _cts.Token);
+
+        _cts = null;
     }
 }
 
 public class MauiLocalStorageService : ILocalStorageService
 {
+    private readonly IPreferences _prefs;
+
+    public MauiLocalStorageService(IPreferences prefs)
+    {
+        _prefs = prefs;
+    }
+
     public double Length => 0;
 
     public void Clear() =>
-        Preferences.Default.Clear();
+        _prefs.Clear();
 
-    public TValue? GetItem<TValue>(string key, JsonSerializerOptions? options = null) =>
-        Preferences.Default.Get<TValue>(key, default);
+    public TValue? GetItem<TValue>(string key, JsonSerializerOptions? options = null)
+    {
+        // if the type is a nullable, then use the underlying type for parsing
+        if (Nullable.GetUnderlyingType(typeof(TValue)) is Type under)
+        {
+            var get = _prefs.GetType().GetMethod("Get")!;
+            var args = new object?[] { key, Activator.CreateInstance(under), default(string) };
+            return (TValue?)get.MakeGenericMethod(under).Invoke(_prefs, args);
+        }
+        else
+        {
+            return _prefs.Get<TValue>(key, default);
+        }
+    }
 
     public string? Key(double index) => default;
 
     public void RemoveItem(string key) =>
-        Preferences.Default.Remove(key);
+        _prefs.Remove(key);
 
-    public void SetItem<TValue>(string key, TValue value, JsonSerializerOptions? options = null) =>
-        Preferences.Default.Set<TValue>(key, value);
+    public void SetItem<TValue>(string key, TValue value, JsonSerializerOptions? options = null)
+    {
+        // if the type is a nullable, then use the underlying type for parsing
+        if (Nullable.GetUnderlyingType(typeof(TValue)) is Type under)
+        {
+            var set = _prefs.GetType().GetMethod("Set")!;
+            var args = new object?[] { key, value, default(string) };
+            set.MakeGenericMethod(under).Invoke(_prefs, args);
+        }
+        else
+        {
+            _prefs.Set<TValue>(key, value);
+        }
+    }
 }
 
 public class MauiSpeechRecognitionService : ISpeechRecognitionService
@@ -164,11 +234,19 @@ public class MauiSpeechRecognitionService : ISpeechRecognitionService
                     last = rec;
                     // nothing changed, so skip
                     if (rec.Length <= current.Length)
+                    {
                         return;
+                    }
                     // new words added, trim and pass just the new words
                     if (rec.Length >= current.Length)
-                        rec = rec.Substring(current.Length);
-                    _onRecognized?.Invoke(rec);
+                    {
+                        rec = rec[current.Length..].Trim();
+                    }
+                    // only fire the event if there was actual new words
+                    if (!string.IsNullOrWhiteSpace(rec))
+                    {
+                        _onRecognized?.Invoke(rec);
+                    }
                 }), _cts.Token);
 
                 if (!recognitionResult.IsSuccessful)

@@ -21,7 +21,16 @@ public sealed partial class VoiceDialog : IDisposable
         _state = RequestVoiceState.RequestingVoices;
 
         await GetVoicesAsync();
-        SpeechSynthesis.OnVoicesChanged(() => GetVoicesAsync(true));
+
+        try
+        {
+            SpeechSynthesis.OnVoicesChanged(() => GetVoicesAsync(true));
+        }
+        catch
+        {
+            // do nothing if the service does not support observation
+            // since the implementation checks for a specific type
+        }
 
         _voicePreferences = new VoicePreferences(LocalStorage);
 
@@ -55,7 +64,18 @@ public sealed partial class VoiceDialog : IDisposable
 
     private void OnCancel() => Dialog.Close(DialogResult.Ok(_voicePreferences));
 
-    public void Dispose() => SpeechSynthesis.UnsubscribeFromVoicesChanged();
+    public void Dispose()
+    {
+        try
+        {
+            SpeechSynthesis.UnsubscribeFromVoicesChanged();
+        }
+        catch
+        {
+            // do nothing if the service does not support observation
+            // since the implementation checks for a specific type
+        }
+    }
 }
 
 internal enum RequestVoiceState
