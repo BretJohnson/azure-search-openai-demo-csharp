@@ -21,8 +21,10 @@ public static class MauiProgram
 
         builder.Services.AddHttpClient<ApiClient>(client =>
         {
-            // TODO: Configure this to point to your deployed API. For example, https://MY_HOSTED_APP.example.azurecontainerapps.io/
-            client.BaseAddress = new Uri("TODO");
+            // Configure this to point to your deployed API. For example, https://MY_HOSTED_APP.example.azurecontainerapps.io/
+            // If you want to use the Azure hosted web app, then the variables will automatically be set.
+            // If you are using a local web app, you will need to replace the URI here with your local host or dev tunnel.
+            client.BaseAddress = new Uri(AppSettings.ServiceWebUri);
         });
         builder.Services.AddScoped<OpenAIPromptQueue>();
         builder.Services.AddSingleton<ILocalStorageService, LocalStorageService>();
